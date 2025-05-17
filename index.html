@@ -20,6 +20,11 @@
     >
 
     <style>
+        html, body {
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
         body {
             background: url('assets/images/Resturate-image.webp') center/cover no-repeat;
             min-height: 100vh;
@@ -274,20 +279,20 @@
                     <div class="col-md-5">
                         <div class="mb-2">
                             <label class="form-label">Customer ID:</label>
-                            <input type="text" class="form-control" value="C001" />
+                            <input type="text" id="customerId" class="form-control" value="" />
                         </div>
                         <div class="mb-2">
                             <label class="form-label">Name:</label>
-                            <input type="text" class="form-control" value="Shamindu" />
+                            <input type="text" id="customerName" class="form-control" value="" />
                         </div>
                         <div class="mb-2">
                             <label class="form-label">Telephone No:</label>
-                            <input type="text" class="form-control" value="0751538845" />
+                            <input type="text" id="customerPhone" class="form-control" value="" />
                         </div>
                         <div class="mt-3">
-                            <button class="btn btn-add me-2">Add</button>
-                            <button class="btn btn-update me-2">Update</button>
-                            <button class="btn btn-delete">Delete</button>
+                            <button id="addCustomer" class="btn btn-add me-2">Add</button>
+                            <button id="updateCustomer" class="btn btn-update me-2">Update</button>
+                            <button id="deleteCustomer" class="btn btn-delete">Delete</button>
                         </div>
                     </div>
 
@@ -295,16 +300,16 @@
                     <div class="col-md-7">
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <div class="highlight-bar">Search Customer 🔍</div>
-                            <button class="btn btn-view-all">View All</button>
+                            <button id="viewAllCustomers" class="btn btn-view-all">View All</button>
                         </div>
                         <div class="input-group mb-3">
-                            <input type="text" class="form-control" placeholder="Customer ID/Name/TelephoneNo" />
-                            <select class="form-select" style="max-width: 150px;">
-                                <option>Telephone</option>
-                                <option>ID</option>
-                                <option>Name</option>
+                            <input type="text" id="customerSearch" class="form-control" placeholder="Customer ID/Name/TelephoneNo" />
+                            <select id="searchType" class="form-select" style="max-width: 150px;">
+                                <option value="phone">Telephone</option>
+                                <option value="id">ID</option>
+                                <option value="name">Name</option>
                             </select>
-                            <button class="btn btn-primary">Search</button>
+                            <button id="searchCustomer" class="btn btn-primary">Search</button>
                         </div>
                         <table class="table table-bordered text-center">
                             <thead class="table-success">
@@ -312,13 +317,11 @@
                                 <th>Customer-ID</th>
                                 <th>Name</th>
                                 <th>Telephone NO</th>
+                                <th>Actions</th>
                             </tr>
                             </thead>
-                            <tbody>
-                            <tr><td>C001</td><td>Shamindu</td><td>0751538845</td></tr>
-                            <tr><td>C002</td><td>Sasanka</td><td>0751666385</td></tr>
-                            <tr><td>C003</td><td>Rani</td><td>0772604586</td></tr>
-                            <tr><td>C004</td><td>Kasun</td><td>0741538845</td></tr>
+                            <tbody id="customerTableBody">
+                            <!-- Data will be inserted here by JavaScript -->
                             </tbody>
                         </table>
                     </div>
@@ -329,11 +332,13 @@
 
     <!-- Item Section -->
     <div id="item" class="section">
-        <div class="container mt-4 ">
+        <div class="container mt-4">
             <div class="card p-4">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h2 class="text-center mb-0">Item Management</h2>
-                    <button class="btn btn-danger" onclick="showSection('home')">Exit</button>
+                    <button class="btn btn-danger" onclick="showSection('home')">
+                        <i class="fas fa-times me-1"></i> Exit
+                    </button>
                 </div>
 
                 <div class="row">
@@ -341,88 +346,76 @@
                     <div class="col-md-5">
                         <div class="mb-3">
                             <label class="form-label">Item ID:</label>
-                            <input type="text" class="form-control" value="1001" readonly>
+                            <input type="text" class="form-control" id="item_IdInput" placeholder="Enter item ID">
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Name:</label>
-                            <input type="text" class="form-control" value="Coffee">
+                            <input type="text" class="form-control" id="item_NameInput" placeholder="Enter item name">
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Qty:</label>
-                            <input type="number" class="form-control" value="10" min="0">
+                            <input type="number" class="form-control" id="item_QtyInput" placeholder="Enter quantity" min="0">
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Price:</label>
-                            <input type="number" class="form-control" value="500.00" min="0" step="0.01">
+                            <label class="form-label">Price (LKR):</label>
+                            <div class="input-group">
+                                <span class="input-group-text">Rs.</span>
+                                <input type="number" class="form-control" id="item_PriceInput" placeholder="Enter price" min="0" step="0.01">
+                            </div>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Expire Date:</label>
-                            <input type="date" class="form-control" value="2025-04-20">
+                            <input type="date" class="form-control" id="itemExpireDateInput">
                         </div>
-                        <div class="mt-3">
-                            <button class="btn btn-success me-2">Add</button>
-                            <button class="btn btn-warning me-2">Update</button>
-                            <button class="btn btn-danger">Delete</button>
+                        <div class="mt-3 action-buttons">
+                            <button class="btn btn-success me-2" id="add_ItemBtn">
+                                <i class="fas fa-plus me-1"></i> Add
+                            </button>
+                            <button class="btn btn-warning me-2" id="updateItemBtn" disabled>
+                                <i class="fas fa-pencil-alt me-1"></i> Update
+                            </button>
+                            <button class="btn btn-danger" id="deleteItemBtn" disabled>
+                                <i class="fas fa-trash me-1"></i> Delete
+                            </button>
+                            <button class="btn btn-secondary" id="resetFormBtn">
+                                <i class="fas fa-undo me-1"></i> Reset
+                            </button>
                         </div>
                     </div>
 
                     <!-- Right Table + Search -->
                     <div class="col-md-7">
                         <div class="card mb-4">
-                            <div class="card-header bg-light">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <h5 class="mb-0">Search Item</h5>
-                                    <button class="btn btn-info btn-sm">View All</button>
-                                </div>
+                            <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0"><i class="fas fa-search me-2"></i>Search Item</h5>
+                                <button class="btn btn-info btn-sm" id="viewAllItemsBtn">
+                                    <i class="fas fa-list me-1"></i> View All
+                                </button>
                             </div>
                             <div class="card-body">
                                 <div class="input-group mb-3">
-                                    <input type="text" class="form-control" placeholder="Item ID">
-                                    <button class="btn btn-primary">Search</button>
+                                    <input type="text" class="form-control" id="itemSearchInput" placeholder="Search by ID or name">
+                                    <button class="btn btn-primary" id="search_ItemBtn">
+                                        <i class="fas fa-search"></i>
+                                    </button>
                                 </div>
                             </div>
                         </div>
 
                         <div class="table-responsive">
-                            <table class="table table-bordered">
+                            <table class="table table-bordered table-hover">
                                 <thead class="table-success">
                                 <tr>
                                     <th>Item ID</th>
                                     <th>Item Name</th>
                                     <th>Qty</th>
-                                    <th>Price</th>
+                                    <th>Price (LKR)</th>
                                     <th>Expire Date</th>
+                                    <th>Status</th>
                                 </tr>
                                 </thead>
-                                <tbody>
-                                <tr>
-                                    <td>1001</td>
-                                    <td>Cake</td>
-                                    <td>100</td>
-                                    <td>120.00</td>
-                                    <td>2025-04-10</td>
-                                </tr>
-                                <tr>
-                                    <td>1002</td>
-                                    <td>Rolls</td>
-                                    <td>20</td>
-                                    <td>200.00</td>
-                                    <td>2025-04-12</td>
-                                </tr>
-                                <tr>
-                                    <td>1003</td>
-                                    <td>Coffee</td>
-                                    <td>150</td>
-                                    <td>500.00</td>
-                                    <td>2025-04-20</td>
-                                </tr>
-                                <tr>
-                                    <td>1004</td>
-                                    <td>Rotl</td>
-                                    <td>50</td>
-                                    <td>150.00</td>
-                                    <td>2025-04-15</td>
-                                </tr>
+                                <tbody id="itemTableBody">
+                                <!-- Items will be populated here by JavaScript -->
                                 </tbody>
                             </table>
                         </div>
@@ -433,12 +426,14 @@
     </div>
 
     <!-- Orders Section -->
-    <div id="orders" class="section">
+    <div id="orders" class="section active">
         <div class="container mt-4">
             <div class="card p-4">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h2 class="text-center mb-0">Add new Order</h2>
-                    <button class="btn btn-danger" onclick="showSection('home')">Exit</button>
+                    <h2 class="text-center mb-0">Order Management</h2>
+                    <button class="btn btn-danger" onclick="showSection('home')">
+                        <i class="fas fa-times me-1"></i> Exit
+                    </button>
                 </div>
 
                 <div class="row">
@@ -446,145 +441,162 @@
                     <div class="col-md-5">
                         <div class="mb-3">
                             <label class="form-label">Order ID:</label>
-                            <input type="text" class="form-control" value="O001" readonly>
+                            <input type="text" class="form-control" id="orderIdInput" value="ORD-1001" readonly>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Customer ID:</label>
+                            <label class="form-label">Customer:</label>
                             <div class="input-group">
-                                <input type="text" class="form-control" value="C001">
-                                <button class="btn btn-outline-secondary">Search Customer</button>
+                                <input type="text" class="form-control" id="customerIdInput" placeholder="Customer ID">
+                                <button class="btn btn-outline-secondary" id="searchCustomerBtn">
+                                    <i class="fas fa-search"></i>
+                                </button>
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Name:</label>
-                            <input type="text" class="form-control" value="Shamindu" readonly>
+                            <label class="form-label">Customer Name:</label>
+                            <input type="text" class="form-control" id="customerNameInput" readonly>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Item ID:</label>
+                            <label class="form-label">Item:</label>
                             <div class="input-group">
-                                <input type="text" class="form-control" value="I001">
-                                <button class="btn btn-outline-secondary">Search Item</button>
+                                <input type="text" class="form-control" id="itemIdInput" placeholder="Item ID">
+                                <button class="btn btn-outline-secondary" id="searchItemBtn">
+                                    <i class="fas fa-search"></i>
+                                </button>
                             </div>
                         </div>
-                        <!-- NEW ITEM QTY FIELD ADDED HERE -->
                         <div class="mb-3">
-                            <label class="form-label">Item Quantity:</label>
-                            <input type="number" class="form-control" value="1" min="1">
+                            <label class="form-label">Item Name:</label>
+                            <input type="text" class="form-control" id="itemNameInput" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Unit Price:</label>
+                            <input type="number" class="form-control" id="itemPriceInput" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Quantity:</label>
+                            <input type="number" class="form-control" id="itemQtyInput" value="1" min="1">
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Order Date:</label>
-                            <input type="date" class="form-control" value="2024-04-10">
+                            <input type="date" class="form-control" id="orderDateInput">
                         </div>
-                        <div class="mt-3">
-                            <button class="btn btn-success me-2">Add</button>
-                            <button class="btn btn-warning me-2">Update</button>
-                            <button class="btn btn-danger">Delete</button>
+                        <div class="mt-3 action-buttons">
+                            <button class="btn btn-success me-2" id="addItemBtn">
+                                <i class="fas fa-plus me-1"></i> Add Item
+                            </button>
+                            <button class="btn btn-secondary" id="clearFormBtn">
+                                <i class="fas fa-undo me-1"></i> Clear
+                            </button>
                         </div>
                     </div>
 
                     <!-- Right Payment Section -->
                     <div class="col-md-7">
                         <div class="card mb-4">
-                            <div class="card-header bg-light">
-                                <h5 class="mb-0">Payment</h5>
+                            <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0"><i class="fas fa-shopping-cart me-2"></i>Current Order</h5>
+                                <span id="orderStatusBadge" class="badge bg-primary">New Order</span>
                             </div>
                             <div class="card-body">
-                                <div class="d-flex justify-content-between mb-2">
-                                    <span>Sub Total:</span>
-                                    <span>2400.00</span>
+                                <div id="orderItemsContainer">
+                                    <p class="text-muted text-center">No items added to order</p>
                                 </div>
-                                <div class="d-flex justify-content-between mb-2">
-                                    <span>Discount:</span>
-                                    <span>5.00</span>
+                                <div class="payment-section mt-3">
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span>Sub Total:</span>
+                                        <span id="subTotalAmount">0.00</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span>Discount:</span>
+                                        <div>
+                                            <input type="number" class="form-control discount-input" id="discountInput" value="0" min="0">
+                                            <span>%</span>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span>Tax (10%):</span>
+                                        <span id="taxAmount">0.00</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-3 fw-bold fs-5">
+                                        <span>Total:</span>
+                                        <span id="totalAmount">0.00</span>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Cash Received:</label>
+                                        <input type="number" class="form-control" id="cashReceivedInput" value="0.00" min="0" step="0.01">
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-3 fw-bold">
+                                        <span>Change:</span>
+                                        <span id="changeAmount">0.00</span>
+                                    </div>
+                                    <button class="btn btn-primary w-100" id="completeOrderBtn">
+                                        <i class="fas fa-credit-card me-1"></i> Complete Order
+                                    </button>
                                 </div>
-                                <div class="d-flex justify-content-between mb-2">
-                                    <span>Total:</span>
-                                    <span class="fw-bold">2540.00</span>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Cash:</label>
-                                    <input type="number" class="form-control" value="3000.00">
-                                </div>
-                                <div class="d-flex justify-content-between mb-3">
-                                    <span>Balance:</span>
-                                    <span>600.00</span>
-                                </div>
-                                <button class="btn btn-primary w-100">Pay Here</button>
                             </div>
                         </div>
 
-                        <!-- Search Section -->
+                        <!-- Order History Section -->
                         <div class="card">
-                            <div class="card-header bg-light">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <h5 class="mb-0">Search Order</h5>
-                                    <button class="btn btn-info btn-sm">View All</button>
-                                </div>
+                            <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0"><i class="fas fa-history me-2"></i>Order History</h5>
+                                <button class="btn btn-info btn-sm" id="viewAllOrdersBtn">
+                                    <i class="fas fa-list me-1"></i> View All
+                                </button>
                             </div>
                             <div class="card-body">
                                 <div class="input-group mb-3">
-                                    <input type="text" class="form-control" placeholder="Order ID">
-                                    <button class="btn btn-primary">Search</button>
+                                    <input type="text" class="form-control" id="searchOrderInput" placeholder="Search by Order ID">
+                                    <button class="btn btn-primary" id="searchOrderBtn">
+                                        <i class="fas fa-search"></i>
+                                    </button>
                                 </div>
                                 <div class="table-responsive">
-                                    <table class="table table-bordered">
+                                    <table class="table table-bordered table-hover">
                                         <thead class="table-success">
                                         <tr>
                                             <th>Order ID</th>
-                                            <th>Customer ID</th>
-                                            <th>Item ID</th>
-                                            <th>Qty</th>
-                                            <th>Price</th>
+                                            <th>Customer</th>
+                                            <th>Items</th>
+                                            <th>Total</th>
                                             <th>Date</th>
+                                            <th>Status</th>
                                         </tr>
                                         </thead>
-                                        <tbody>
-                                        <tr>
-                                            <td>O001</td>
-                                            <td>C001</td>
-                                            <td>I001</td>
-                                            <td>2</td>
-                                            <td>100.00</td>
-                                            <td>2024-04-10</td>
-                                        </tr>
-                                        <tr>
-                                            <td>O002</td>
-                                            <td>C002</td>
-                                            <td>I003</td>
-                                            <td>5</td>
-                                            <td>2000.00</td>
-                                            <td>2024-04-02</td>
-                                        </tr>
-                                        <tr>
-                                            <td>O003</td>
-                                            <td>C003</td>
-                                            <td>I004</td>
-                                            <td>10</td>
-                                            <td>4000.00</td>
-                                            <td>2025-01-23</td>
-                                        </tr>
-                                        <tr>
-                                            <td>O004</td>
-                                            <td>C004</td>
-                                            <td>I005</td>
-                                            <td>12</td>
-                                            <td>5200.00</td>
-                                            <td>2025-02-10</td>
-                                        </tr>
-                                        <tr>
-                                            <td>O005</td>
-                                            <td>C005</td>
-                                            <td>I002</td>
-                                            <td>5</td>
-                                            <td>1000.00</td>
-                                            <td>2025-01-25</td>
-                                        </tr>
+                                        <tbody id="orderHistoryTable">
+                                        <!-- Orders will be populated here by JavaScript -->
                                         </tbody>
                                     </table>
                                 </div>
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Success Modal -->
+    <div class="modal fade" id="paymentSuccessModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title">Payment Successful</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <i class="fas fa-check-circle text-success mb-3" style="font-size: 4rem;"></i>
+                    <h4>Order Completed Successfully!</h4>
+                    <p>Order ID: <strong id="completedOrderId"></strong></p>
+                    <p>Total Amount: <strong id="completedOrderAmount"></strong></p>
+                    <p>Change: <strong id="completedOrderChange"></strong></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-success" id="printReceiptBtn">
+                        <i class="fas fa-print me-1"></i> Print Receipt
+                    </button>
                 </div>
             </div>
         </div>
@@ -627,6 +639,834 @@
     // Initialize with home section
     document.addEventListener('DOMContentLoaded', function() {
         showSection('home');
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // DOM Elements
+        const customerIdInput = document.getElementById('customerId');
+        const customerNameInput = document.getElementById('customerName');
+        const customerPhoneInput = document.getElementById('customerPhone');
+        const addBtn = document.getElementById('addCustomer');
+        const updateBtn = document.getElementById('updateCustomer');
+        const deleteBtn = document.getElementById('deleteCustomer');
+        const searchInput = document.getElementById('customerSearch');
+        const searchType = document.getElementById('searchType');
+        const searchBtn = document.getElementById('searchCustomer');
+        const viewAllBtn = document.getElementById('viewAllCustomers');
+        const customerTableBody = document.getElementById('customerTableBody');
+
+        // Customer data array
+        let customers = [
+            { id: 'C001', name: 'Shamindu', phone: '0751538845' },
+            { id: 'C002', name: 'Sasanka', phone: '0751666385' },
+            { id: 'C003', name: 'Rani', phone: '0772604586' },
+            { id: 'C004', name: 'Kasun', phone: '0741538845' }
+        ];
+
+        // Current customer being edited
+        let currentCustomerId = null;
+
+        // Render customer table
+        function renderCustomers(customersToRender = customers) {
+            customerTableBody.innerHTML = '';
+            customersToRender.forEach(customer => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                <td>${customer.id}</td>
+                <td>${customer.name}</td>
+                <td>${customer.phone}</td>
+                <td>
+                    <button class="btn btn-sm btn-warning edit-btn" data-id="${customer.id}">Edit</button>
+                    <button class="btn btn-sm btn-danger delete-row-btn" data-id="${customer.id}">Delete</button>
+                </td>
+            `;
+                customerTableBody.appendChild(row);
+            });
+
+            // Add event listeners to edit buttons
+            document.querySelectorAll('.edit-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const customerId = this.getAttribute('data-id');
+                    editCustomer(customerId);
+                });
+            });
+
+            // Add event listeners to delete buttons
+            document.querySelectorAll('.delete-row-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const customerId = this.getAttribute('data-id');
+                    deleteCustomer(customerId);
+                });
+            });
+        }
+
+        // Add new customer
+        addBtn.addEventListener('click', function() {
+            const newCustomer = {
+                id: customerIdInput.value,
+                name: customerNameInput.value,
+                phone: customerPhoneInput.value
+            };
+
+            if (newCustomer.id && newCustomer.name && newCustomer.phone) {
+                customers.push(newCustomer);
+                renderCustomers();
+                clearForm();
+            } else {
+                alert('Please fill all fields');
+            }
+        });
+
+        // Update customer
+        updateBtn.addEventListener('click', function() {
+            if (currentCustomerId) {
+                const customerIndex = customers.findIndex(c => c.id === currentCustomerId);
+                if (customerIndex !== -1) {
+                    customers[customerIndex] = {
+                        id: customerIdInput.value,
+                        name: customerNameInput.value,
+                        phone: customerPhoneInput.value
+                    };
+                    renderCustomers();
+                    clearForm();
+                    currentCustomerId = null;
+                    updateBtn.disabled = true;
+                    deleteBtn.disabled = true;
+                }
+            }
+        });
+
+        // Delete customer
+        deleteBtn.addEventListener('click', function() {
+            if (currentCustomerId) {
+                if (confirm('Are you sure you want to delete this customer?')) {
+                    customers = customers.filter(c => c.id !== currentCustomerId);
+                    renderCustomers();
+                    clearForm();
+                    currentCustomerId = null;
+                    updateBtn.disabled = true;
+                    deleteBtn.disabled = true;
+                }
+            }
+        });
+
+        // Edit customer
+        function editCustomer(customerId) {
+            const customer = customers.find(c => c.id === customerId);
+            if (customer) {
+                customerIdInput.value = customer.id;
+                customerNameInput.value = customer.name;
+                customerPhoneInput.value = customer.phone;
+                currentCustomerId = customer.id;
+                updateBtn.disabled = false;
+                deleteBtn.disabled = false;
+            }
+        }
+
+        // Delete customer from table row
+        function deleteCustomer(customerId) {
+            if (confirm('Are you sure you want to delete this customer?')) {
+                customers = customers.filter(c => c.id !== customerId);
+                renderCustomers();
+                if (currentCustomerId === customerId) {
+                    clearForm();
+                    currentCustomerId = null;
+                    updateBtn.disabled = true;
+                    deleteBtn.disabled = true;
+                }
+            }
+        }
+
+        // Search customers
+        searchBtn.addEventListener('click', function() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const type = searchType.value;
+
+            if (searchTerm) {
+                const filteredCustomers = customers.filter(customer => {
+                    if (type === 'phone') return customer.phone.toLowerCase().includes(searchTerm);
+                    if (type === 'id') return customer.id.toLowerCase().includes(searchTerm);
+                    if (type === 'name') return customer.name.toLowerCase().includes(searchTerm);
+                    return false;
+                });
+                renderCustomers(filteredCustomers);
+            } else {
+                renderCustomers();
+            }
+        });
+
+        // View all customers
+        viewAllBtn.addEventListener('click', function() {
+            searchInput.value = '';
+            renderCustomers();
+        });
+
+        // Clear form
+        function clearForm() {
+            customerIdInput.value = '';
+            customerNameInput.value = '';
+            customerPhoneInput.value = '';
+        }
+
+        // Initialize
+        renderCustomers();
+        updateBtn.disabled = true;
+        deleteBtn.disabled = true;
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // DOM Elements with consistent naming
+        const item_IdInput = document.getElementById('item_IdInput');
+        const item_NameInput = document.getElementById('item_NameInput');
+        const item_QtyInput = document.getElementById('item_QtyInput');
+        const item_PriceInput = document.getElementById('item_PriceInput');
+        const item_ExpireDateInput = document.getElementById('itemExpireDateInput');
+        const item_AddBtn = document.getElementById('add_ItemBtn');
+        const item_UpdateBtn = document.getElementById('updateItemBtn');
+        const item_DeleteBtn = document.getElementById('deleteItemBtn');
+        const item_ResetBtn = document.getElementById('resetFormBtn');
+        const item_SearchInput = document.getElementById('itemSearchInput');
+        const item_SearchBtn = document.getElementById('search_ItemBtn');
+        const item_ViewAllBtn = document.getElementById('viewAllItemsBtn');
+        const item_TableBody = document.getElementById('itemTableBody');
+
+        // Item data array
+        let items = [
+            { id: 'I001', name: 'Cake', qty: 100, price: 120.00, expireDate: '2025-04-10' },
+            { id: 'I002', name: 'Rolls', qty: 20, price: 200.00, expireDate: '2025-04-12' },
+            { id: 'I003', name: 'Coffee', qty: 150, price: 500.00, expireDate: '2025-04-20' },
+            { id: 'I004', name: 'Rotl', qty: 50, price: 150.00, expireDate: '2025-04-15' }
+        ];
+
+        // Current item being edited
+        let currentItemId = null;
+
+        // Render item table
+        function renderItems(itemsToRender = items) {
+            item_TableBody.innerHTML = '';
+            itemsToRender.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                <td>${item.id}</td>
+                <td>${item.name}</td>
+                <td>${item.qty}</td>
+                <td>${item.price.toFixed(2)}</td>
+                <td>${item.expireDate}</td>
+                <td>
+                    <button class="btn btn-sm btn-warning item_EditBtn" data-id="${item.id}">Edit</button>
+                    <button class="btn btn-sm btn-danger item_DeleteRowBtn" data-id="${item.id}">Delete</button>
+                </td>
+            `;
+                item_TableBody.appendChild(row);
+            });
+
+            // Add event listeners to edit buttons
+            document.querySelectorAll('.item_EditBtn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const itemId = this.getAttribute('data-id');
+                    editItem(itemId);
+                });
+            });
+
+            // Add event listeners to delete buttons
+            document.querySelectorAll('.item_DeleteRowBtn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const itemId = this.getAttribute('data-id');
+                    deleteItem(itemId);
+                });
+            });
+        }
+
+        // Add new item
+        item_AddBtn.addEventListener('click', function() {
+            const newItem = {
+                id: item_IdInput.value.trim(),
+                name: item_NameInput.value.trim(),
+                qty: parseInt(item_QtyInput.value),
+                price: parseFloat(item_PriceInput.value),
+                expireDate: item_ExpireDateInput.value
+            };
+
+            if (validateItem(newItem)) {
+                if (items.some(item => item.id === newItem.id)) {
+                    alert('Item ID already exists!');
+                    return;
+                }
+
+                items.push(newItem);
+                renderItems();
+                clearForm();
+            } else {
+                alert('Please fill all fields correctly');
+            }
+        });
+
+        // Update item
+        item_UpdateBtn.addEventListener('click', function() {
+            if (currentItemId) {
+                const itemIndex = items.findIndex(i => i.id === currentItemId);
+                if (itemIndex !== -1) {
+                    const updatedItem = {
+                        id: item_IdInput.value.trim(),
+                        name: item_NameInput.value.trim(),
+                        qty: parseInt(item_QtyInput.value),
+                        price: parseFloat(item_PriceInput.value),
+                        expireDate: item_ExpireDateInput.value
+                    };
+
+                    if (validateItem(updatedItem)) {
+                        if (updatedItem.id !== currentItemId && items.some(item => item.id === updatedItem.id)) {
+                            alert('Item ID already exists!');
+                            return;
+                        }
+
+                        items[itemIndex] = updatedItem;
+                        renderItems();
+                        clearForm();
+                        currentItemId = null;
+                        item_UpdateBtn.disabled = true;
+                        item_DeleteBtn.disabled = true;
+                    }
+                }
+            }
+        });
+
+        // Delete item
+        item_DeleteBtn.addEventListener('click', function() {
+            if (currentItemId && confirm('Are you sure you want to delete this item?')) {
+                items = items.filter(i => i.id !== currentItemId);
+                renderItems();
+                clearForm();
+                currentItemId = null;
+                item_UpdateBtn.disabled = true;
+                item_DeleteBtn.disabled = true;
+            }
+        });
+
+        // Edit item
+        function editItem(itemId) {
+            const item = items.find(i => i.id === itemId);
+            if (item) {
+                item_IdInput.value = item.id;
+                item_NameInput.value = item.name;
+                item_QtyInput.value = item.qty;
+                item_PriceInput.value = item.price;
+                item_ExpireDateInput.value = item.expireDate;
+                currentItemId = item.id;
+                item_UpdateBtn.disabled = false;
+                item_DeleteBtn.disabled = false;
+            }
+        }
+
+        // Delete item from table row
+        function deleteItem(itemId) {
+            if (confirm('Are you sure you want to delete this item?')) {
+                items = items.filter(i => i.id !== itemId);
+                renderItems();
+                if (currentItemId === itemId) {
+                    clearForm();
+                    currentItemId = null;
+                    item_UpdateBtn.disabled = true;
+                    item_DeleteBtn.disabled = true;
+                }
+            }
+        }
+
+        // Search items
+        item_SearchBtn.addEventListener('click', function() {
+            const searchTerm = item_SearchInput.value.trim().toLowerCase();
+            if (searchTerm) {
+                const filteredItems = items.filter(item =>
+                    item.id.toLowerCase().includes(searchTerm) ||
+                    item.name.toLowerCase().includes(searchTerm)
+                );
+                renderItems(filteredItems);
+            } else {
+                renderItems();
+            }
+        });
+
+        // View all items
+        item_ViewAllBtn.addEventListener('click', function() {
+            item_SearchInput.value = '';
+            renderItems();
+        });
+
+        // Validate item
+        function validateItem(item) {
+            return item.id &&
+                item.name &&
+                !isNaN(item.qty) && item.qty >= 0 &&
+                !isNaN(item.price) && item.price >= 0 &&
+                item.expireDate;
+        }
+
+        // Reset form
+        item_ResetBtn.addEventListener('click', resetForm);
+
+        function resetForm() {
+            clearForm();
+            currentItemId = null;
+            item_UpdateBtn.disabled = true;
+            item_DeleteBtn.disabled = true;
+        }
+
+        function clearForm() {
+            item_IdInput.value = '';
+            item_NameInput.value = '';
+            item_QtyInput.value = '';
+            item_PriceInput.value = '';
+            item_ExpireDateInput.value = '';
+            item_IdInput.focus();
+        }
+
+        // Initialize
+        renderItems();
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // DOM Elements
+        const orderIdInput = document.getElementById('orderIdInput');
+        const customerIdInput = document.getElementById('customerIdInput');
+        const customerNameInput = document.getElementById('customerNameInput');
+        const itemIdInput = document.getElementById('itemIdInput');
+        const itemNameInput = document.getElementById('itemNameInput');
+        const itemPriceInput = document.getElementById('itemPriceInput');
+        const itemQtyInput = document.getElementById('itemQtyInput');
+        const orderDateInput = document.getElementById('orderDateInput');
+        const addItemBtn = document.getElementById('addItemBtn');
+        const clearFormBtn = document.getElementById('clearFormBtn');
+        const searchCustomerBtn = document.getElementById('searchCustomerBtn');
+        const searchItemBtn = document.getElementById('searchItemBtn');
+        const orderItemsContainer = document.getElementById('orderItemsContainer');
+        const subTotalAmount = document.getElementById('subTotalAmount');
+        const discountInput = document.getElementById('discountInput');
+        const taxAmount = document.getElementById('taxAmount');
+        const totalAmount = document.getElementById('totalAmount');
+        const cashReceivedInput = document.getElementById('cashReceivedInput');
+        const changeAmount = document.getElementById('changeAmount');
+        const completeOrderBtn = document.getElementById('completeOrderBtn');
+        const searchOrderInput = document.getElementById('searchOrderInput');
+        const searchOrderBtn = document.getElementById('searchOrderBtn');
+        const viewAllOrdersBtn = document.getElementById('viewAllOrdersBtn');
+        const orderHistoryTable = document.getElementById('orderHistoryTable');
+        const paymentSuccessModal = new bootstrap.Modal(document.getElementById('paymentSuccessModal'));
+        const printReceiptBtn = document.getElementById('printReceiptBtn');
+        const completedOrderId = document.getElementById('completedOrderId');
+        const completedOrderAmount = document.getElementById('completedOrderAmount');
+        const completedOrderChange = document.getElementById('completedOrderChange');
+        const orderStatusBadge = document.getElementById('orderStatusBadge');
+
+        // Sample data
+        const customers = [
+            { id: 'C001', name: 'John Doe' },
+            { id: 'C002', name: 'Jane Smith' },
+            { id: 'C003', name: 'Robert Johnson' }
+        ];
+
+        const items = [
+            { id: 'I001', name: 'Laptop', price: 1200.00 },
+            { id: 'I002', name: 'Mouse', price: 25.00 },
+            { id: 'I003', name: 'Keyboard', price: 45.00 },
+            { id: 'I004', name: 'Monitor', price: 250.00 },
+            { id: 'I005', name: 'Headphones', price: 75.00 }
+        ];
+
+        let orders = [
+            {
+                id: 'ORD-1001',
+                customerId: 'C001',
+                customerName: 'John Doe',
+                date: '2024-04-15',
+                items: [
+                    { id: 'I001', name: 'Laptop', price: 1200.00, qty: 1 },
+                    { id: 'I002', name: 'Mouse', price: 25.00, qty: 2 }
+                ],
+                subTotal: 1250.00,
+                discount: 0,
+                tax: 125.00,
+                total: 1375.00,
+                cashReceived: 1500.00,
+                change: 125.00,
+                status: 'Completed'
+            },
+            {
+                id: 'ORD-1002',
+                customerId: 'C002',
+                customerName: 'Jane Smith',
+                date: '2024-04-16',
+                items: [
+                    { id: 'I003', name: 'Keyboard', price: 45.00, qty: 3 },
+                    { id: 'I005', name: 'Headphones', price: 75.00, qty: 1 }
+                ],
+                subTotal: 210.00,
+                discount: 10,
+                tax: 21.00,
+                total: 210.00,
+                cashReceived: 250.00,
+                change: 40.00,
+                status: 'Completed'
+            }
+        ];
+
+        // Current order
+        let currentOrder = {
+            id: generateOrderId(),
+            customerId: '',
+            customerName: '',
+            date: new Date().toISOString().split('T')[0],
+            items: [],
+            subTotal: 0,
+            discount: 0,
+            tax: 0,
+            total: 0,
+            cashReceived: 0,
+            change: 0,
+            status: 'New'
+        };
+
+        // Initialize
+        orderIdInput.value = currentOrder.id;
+        orderDateInput.value = currentOrder.date;
+        renderOrderHistory();
+        updateOrderSummary();
+
+        // Event Listeners
+        addItemBtn.addEventListener('click', addItemToOrder);
+        clearFormBtn.addEventListener('click', clearForm);
+        searchCustomerBtn.addEventListener('click', searchCustomer);
+        searchItemBtn.addEventListener('click', searchItem);
+        discountInput.addEventListener('input', updateOrderSummary);
+        cashReceivedInput.addEventListener('input', updateOrderSummary);
+        completeOrderBtn.addEventListener('click', completeOrder);
+        searchOrderBtn.addEventListener('click', searchOrders);
+        viewAllOrdersBtn.addEventListener('click', renderOrderHistory);
+        printReceiptBtn.addEventListener('click', printReceipt);
+
+        // Customer ID input event
+        customerIdInput.addEventListener('change', function() {
+            const customer = customers.find(c => c.id === customerIdInput.value);
+            if (customer) {
+                customerNameInput.value = customer.name;
+                currentOrder.customerId = customer.id;
+                currentOrder.customerName = customer.name;
+            } else {
+                customerNameInput.value = '';
+                currentOrder.customerId = '';
+                currentOrder.customerName = '';
+            }
+        });
+
+        // Item ID input event
+        itemIdInput.addEventListener('change', function() {
+            const item = items.find(i => i.id === itemIdInput.value);
+            if (item) {
+                itemNameInput.value = item.name;
+                itemPriceInput.value = item.price.toFixed(2);
+            } else {
+                itemNameInput.value = '';
+                itemPriceInput.value = '';
+            }
+        });
+
+        // Functions
+        function generateOrderId() {
+            return 'ORD-' + (1000 + orders.length + 1);
+        }
+
+        function addItemToOrder() {
+            const itemId = itemIdInput.value;
+            const itemName = itemNameInput.value;
+            const price = parseFloat(itemPriceInput.value);
+            const qty = parseInt(itemQtyInput.value);
+
+            if (!itemId || !itemName || isNaN(price) || isNaN(qty)) {
+                alert('Please select a valid item and quantity');
+                return;
+            }
+
+            // Check if item already exists in order
+            const existingItemIndex = currentOrder.items.findIndex(item => item.id === itemId);
+            if (existingItemIndex >= 0) {
+                // Update quantity if item already exists
+                currentOrder.items[existingItemIndex].qty += qty;
+            } else {
+                // Add new item
+                currentOrder.items.push({
+                    id: itemId,
+                    name: itemName,
+                    price: price,
+                    qty: qty
+                });
+            }
+
+            // Update order status
+            currentOrder.status = 'In Progress';
+            orderStatusBadge.textContent = currentOrder.status;
+            orderStatusBadge.className = 'badge bg-warning';
+
+            renderOrderItems();
+            updateOrderSummary();
+            clearItemForm();
+        }
+
+        function renderOrderItems() {
+            if (currentOrder.items.length === 0) {
+                orderItemsContainer.innerHTML = '<p class="text-muted text-center">No items added to order</p>';
+                return;
+            }
+
+            let html = '';
+            currentOrder.items.forEach((item, index) => {
+                html += `
+                        <div class="order-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-1">${item.name}</h6>
+                                <small class="text-muted">${item.id} | Rs. ${item.price.toFixed(2)} x ${item.qty}</small>
+                            </div>
+                            <div>
+                                <span class="fw-bold">Rs. ${(item.price * item.qty).toFixed(2)}</span>
+                                <button class="btn btn-sm btn-outline-danger ms-2 remove-item-btn" data-index="${index}">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+            });
+
+            orderItemsContainer.innerHTML = html;
+
+            // Add event listeners to remove buttons
+            document.querySelectorAll('.remove-item-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const index = parseInt(this.getAttribute('data-index'));
+                    currentOrder.items.splice(index, 1);
+                    renderOrderItems();
+                    updateOrderSummary();
+
+                    if (currentOrder.items.length === 0) {
+                        currentOrder.status = 'New';
+                        orderStatusBadge.textContent = currentOrder.status;
+                        orderStatusBadge.className = 'badge bg-primary';
+                    }
+                });
+            });
+        }
+
+        function updateOrderSummary() {
+            // Calculate subtotal
+            currentOrder.subTotal = currentOrder.items.reduce((sum, item) => sum + (item.price * item.qty), 0);
+
+            // Get discount
+            currentOrder.discount = parseFloat(discountInput.value) || 0;
+
+            // Calculate tax (10%)
+            currentOrder.tax = (currentOrder.subTotal * 0.1);
+
+            // Calculate total
+            const discountAmount = currentOrder.subTotal * (currentOrder.discount / 100);
+            currentOrder.total = (currentOrder.subTotal - discountAmount) + currentOrder.tax;
+
+            // Get cash received
+            currentOrder.cashReceived = parseFloat(cashReceivedInput.value) || 0;
+
+            // Calculate change
+            currentOrder.change = currentOrder.cashReceived - currentOrder.total;
+
+            // Update UI
+            subTotalAmount.textContent = currentOrder.subTotal.toFixed(2);
+            taxAmount.textContent = currentOrder.tax.toFixed(2);
+            totalAmount.textContent = currentOrder.total.toFixed(2);
+            changeAmount.textContent = currentOrder.change.toFixed(2);
+
+            // Highlight change if negative
+            if (currentOrder.change < 0) {
+                changeAmount.classList.add('text-danger');
+            } else {
+                changeAmount.classList.remove('text-danger');
+            }
+        }
+
+        function clearForm() {
+            customerIdInput.value = '';
+            customerNameInput.value = '';
+            clearItemForm();
+            currentOrder.customerId = '';
+            currentOrder.customerName = '';
+        }
+
+        function clearItemForm() {
+            itemIdInput.value = '';
+            itemNameInput.value = '';
+            itemPriceInput.value = '';
+            itemQtyInput.value = '1';
+            itemIdInput.focus();
+        }
+
+        function searchCustomer() {
+            const customerId = customerIdInput.value.trim();
+            if (!customerId) {
+                alert('Please enter a customer ID');
+                return;
+            }
+
+            const customer = customers.find(c => c.id === customerId);
+            if (customer) {
+                customerNameInput.value = customer.name;
+                currentOrder.customerId = customer.id;
+                currentOrder.customerName = customer.name;
+            } else {
+                alert('Customer not found');
+                customerNameInput.value = '';
+                currentOrder.customerId = '';
+                currentOrder.customerName = '';
+            }
+        }
+
+        function searchItem() {
+            const itemId = itemIdInput.value.trim();
+            if (!itemId) {
+                alert('Please enter an item ID');
+                return;
+            }
+
+            const item = items.find(i => i.id === itemId);
+            if (item) {
+                itemNameInput.value = item.name;
+                itemPriceInput.value = item.price.toFixed(2);
+            } else {
+                alert('Item not found');
+                itemNameInput.value = '';
+                itemPriceInput.value = '';
+            }
+        }
+
+        function completeOrder() {
+            if (currentOrder.items.length === 0) {
+                alert('Please add items to the order');
+                return;
+            }
+
+            if (currentOrder.cashReceived < currentOrder.total) {
+                alert('Cash received is less than total amount');
+                return;
+            }
+
+            // Update order status
+            currentOrder.status = 'Completed';
+            orderStatusBadge.textContent = currentOrder.status;
+            orderStatusBadge.className = 'badge bg-success';
+
+            // Add to orders history
+            orders.unshift({...currentOrder});
+
+            // Show success modal
+            completedOrderId.textContent = currentOrder.id;
+            completedOrderAmount.textContent = 'Rs. ' + currentOrder.total.toFixed(2);
+            completedOrderChange.textContent = 'Rs. ' + currentOrder.change.toFixed(2);
+            paymentSuccessModal.show();
+
+            // Reset for new order
+            resetForNewOrder();
+        }
+
+        function resetForNewOrder() {
+            currentOrder = {
+                id: generateOrderId(),
+                customerId: '',
+                customerName: '',
+                date: new Date().toISOString().split('T')[0],
+                items: [],
+                subTotal: 0,
+                discount: 0,
+                tax: 0,
+                total: 0,
+                cashReceived: 0,
+                change: 0,
+                status: 'New'
+            };
+
+            orderIdInput.value = currentOrder.id;
+            orderDateInput.value = currentOrder.date;
+            orderStatusBadge.textContent = currentOrder.status;
+            orderStatusBadge.className = 'badge bg-primary';
+            clearForm();
+            renderOrderItems();
+            updateOrderSummary();
+            renderOrderHistory();
+        }
+
+        function renderOrderHistory(filteredOrders = orders) {
+            orderHistoryTable.innerHTML = '';
+
+            if (filteredOrders.length === 0) {
+                orderHistoryTable.innerHTML = `
+                        <tr>
+                            <td colspan="6" class="text-center text-muted py-4">No orders found</td>
+                        </tr>
+                    `;
+                return;
+            }
+
+            filteredOrders.forEach(order => {
+                const row = document.createElement('tr');
+                row.className = 'cursor-pointer';
+                row.innerHTML = `
+                        <td>${order.id}</td>
+                        <td>${order.customerName}</td>
+                        <td>${order.items.length} items</td>
+                        <td>Rs. ${order.total.toFixed(2)}</td>
+                        <td>${order.date}</td>
+                        <td>
+                            <span class="badge ${order.status === 'Completed' ? 'bg-success' : 'bg-warning'}">
+                                ${order.status}
+                            </span>
+                        </td>
+                    `;
+                row.addEventListener('click', () => viewOrderDetails(order.id));
+                orderHistoryTable.appendChild(row);
+            });
+        }
+
+        function viewOrderDetails(orderId) {
+            const order = orders.find(o => o.id === orderId);
+            if (!order) return;
+
+            // In a real application, you might show a detailed view modal
+            alert(`Order Details\nID: ${order.id}\nCustomer: ${order.customerName}\nTotal: Rs. ${order.total.toFixed(2)}\nStatus: ${order.status}`);
+        }
+
+        function searchOrders() {
+            const searchTerm = searchOrderInput.value.trim().toLowerCase();
+            if (!searchTerm) {
+                renderOrderHistory();
+                return;
+            }
+
+            const filteredOrders = orders.filter(order =>
+                order.id.toLowerCase().includes(searchTerm) ||
+                order.customerName.toLowerCase().includes(searchTerm)
+            );
+            renderOrderHistory(filteredOrders);
+        }
+
+        function printReceipt() {
+            // In a real application, you would implement actual receipt printing
+            alert('Receipt printing functionality would be implemented here');
+            paymentSuccessModal.hide();
+        }
+
+        // Mock function for section switching
+        function showSection(sectionId) {
+            console.log(`Switching to ${sectionId} section`);
+            // In a real application, you would show/hide sections here
+        }
     });
 </script>
 
