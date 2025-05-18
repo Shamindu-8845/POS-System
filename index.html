@@ -839,7 +839,7 @@
             { id: 'I001', name: 'Cake', qty: 100, price: 120.00, expireDate: '2025-04-10' },
             { id: 'I002', name: 'Rolls', qty: 20, price: 200.00, expireDate: '2025-04-12' },
             { id: 'I003', name: 'Coffee', qty: 150, price: 500.00, expireDate: '2025-04-20' },
-            { id: 'I004', name: 'Rotl', qty: 50, price: 150.00, expireDate: '2025-04-15' }
+            { id: 'I004', name: 'Roti', qty: 50, price: 150.00, expireDate: '2025-04-15' }
         ];
 
         // Current item being edited
@@ -1065,28 +1065,27 @@
 
         // Sample data
         const customers = [
-            { id: 'C001', name: 'John Doe' },
-            { id: 'C002', name: 'Jane Smith' },
-            { id: 'C003', name: 'Robert Johnson' }
+            { id: 'C001', name: 'Shamindu' },
+            { id: 'C002', name: 'Kasun' },
+            { id: 'C003', name: 'Rani' }
         ];
 
         const items = [
-            { id: 'I001', name: 'Laptop', price: 1200.00 },
-            { id: 'I002', name: 'Mouse', price: 25.00 },
-            { id: 'I003', name: 'Keyboard', price: 45.00 },
-            { id: 'I004', name: 'Monitor', price: 250.00 },
-            { id: 'I005', name: 'Headphones', price: 75.00 }
+            { id: 'I001', name: 'Cake', price: 1200.00 },
+            { id: 'I002', name: 'Rolls', price: 25.00 },
+            { id: 'I003', name: 'Coffee', price: 45.00 },
+            { id: 'I004', name: 'Roti', price: 250.00 }
         ];
 
         let orders = [
             {
                 id: 'ORD-1001',
                 customerId: 'C001',
-                customerName: 'John Doe',
+                customerName: 'Shamindu',
                 date: '2024-04-15',
                 items: [
-                    { id: 'I001', name: 'Laptop', price: 1200.00, qty: 1 },
-                    { id: 'I002', name: 'Mouse', price: 25.00, qty: 2 }
+                    { id: 'I001', name: 'Cake', price: 1200.00, qty: 1 },
+                    { id: 'I002', name: 'Rolls', price: 25.00, qty: 2 }
                 ],
                 subTotal: 1250.00,
                 discount: 0,
@@ -1099,11 +1098,11 @@
             {
                 id: 'ORD-1002',
                 customerId: 'C002',
-                customerName: 'Jane Smith',
+                customerName: 'Kasun',
                 date: '2024-04-16',
                 items: [
-                    { id: 'I003', name: 'Keyboard', price: 45.00, qty: 3 },
-                    { id: 'I005', name: 'Headphones', price: 75.00, qty: 1 }
+                    { id: 'I003', name: 'Coffee', price: 45.00, qty: 3 },
+                    { id: 'I005', name: 'Roti', price: 75.00, qty: 1 }
                 ],
                 subTotal: 210.00,
                 discount: 10,
