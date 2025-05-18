@@ -19,148 +19,14 @@
             rel="stylesheet"
     >
 
+    <link rel="stylesheet" href="style/style.css">
+
     <style>
-        html, body {
-            margin: 0 !important;
-            padding: 0 !important;
-        }
-
         body {
-            background: url('assets/images/Resturate-image.webp') center/cover no-repeat;
+            background: url('assets/images/Resturate-image.webp') center/cover no-repeat fixed;
+            display: flex;
+            flex-direction: column;
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-        header {
-            background-color: lightgray;
-            flex-shrink: 0;
-        }
-        .nav-link {
-            color: black;
-            font-size: 16px;
-        }
-        .main-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            padding: 20px;
-        }
-        .section-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex: 1;
-            padding: 50px;
-        }
-        .box {
-            background-color: rgba(255,255,255,0.8);
-            border-radius: 1rem;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            padding: 2.5rem;
-            max-width: 800px;
-            width: 100%;
-            margin: auto;
-        }
-        .box h1 {
-            font-family: 'Great Vibes', cursive;
-            font-size: 3rem;
-            text-shadow: 1px 1px 2px #aaa;
-        }
-        h1 {
-            font-family: 'Great Vibes', cursive;
-            font-size: 3rem;
-            text-shadow: 1px 1px 2px #aaa;
-        }
-        .box h2 {
-            font-family: 'Dancing Script', cursive;
-            font-size: 2.5rem;
-            color: red;
-            text-shadow: 1px 1px 3px #444;
-        }
-        h2 {
-            font-family: 'Dancing Script', cursive;
-            font-size: 2.5rem;
-            color: red;
-            text-shadow: 1px 1px 3px #444;
-        }
-        .start-btn, .login-btn {
-            background-color: #e6007e;
-            color: #fff;
-            border: none;
-            border-radius: 25px;
-            padding: .75rem 2rem;
-            font-size: 1.1rem;
-            margin-top: 1.5rem;
-        }
-        .footer-text {
-            margin-top: 1.5rem;
-            font-size: .9rem;
-            text-align: center;
-            color: #333;
-        }
-
-        /* Customer section styles */
-        .customer-container {
-            width: 100%;
-            max-width: 1200px;
-            margin: 20px auto;
-        }
-        .highlight-bar {
-            background-color: #f8f9fa;
-            padding: 8px 15px;
-            border-radius: 5px;
-            font-weight: bold;
-        }
-        .btn-add {
-            background-color: #28a745;
-            color: white;
-        }
-        .btn-update {
-            background-color: #ffc107;
-            color: black;
-        }
-        .btn-delete {
-            background-color: #dc3545;
-            color: white;
-        }
-        .btn-view-all {
-            background-color: #17a2b8;
-            color: white;
-        }
-
-        /* Section toggling */
-        .section {
-            display: none;
-            width: 100%;
-        }
-        .section.active {
-            display: block;
-        }
-        .nav-link.active {
-            font-weight: bold;
-            text-decoration: underline;
-        }
-
-        @media (max-width: 768px) {
-            .box {
-                padding: 1.5rem;
-            }
-            .box h1, .box h2 {
-                font-size: 2rem;
-            }
-            .start-btn, .login-btn {
-                font-size: 1rem;
-                padding: .5rem 1.5rem;
-            }
-        }
-
-        @media (max-width: 576px) {
-            .box {
-                padding: 1rem;
-            }
-            .box h1, .box h2 {
-                font-size: 1.8rem;
-            }
         }
     </style>
 </head>
@@ -706,6 +572,173 @@
 ></script>
 
 <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // User data array (in a real app, this would be from a database)
+        const users = [
+            { id: 1, username: 'admin', password: 'admin123', name: 'System Admin', role: 'admin' },
+            { id: 2, username: 'cashier', password: 'cashier123', name: 'Cashier User', role: 'cashier' },
+            { id: 3, username: 'manager', password: 'manager123', name: 'Restaurant Manager', role: 'manager' }
+        ];
+
+        // DOM Elements
+        const loginForm = document.querySelector('#login form');
+        const loginUsername = document.getElementById('loginUsername');
+        const loginPassword = document.getElementById('loginPassword');
+        const signupLink = document.querySelector('#login a[onclick="showSection(\'signup\')"]');
+
+        // Current user (will be set after successful login)
+        let currentUser = null;
+
+        // Login form submission
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            handleLogin();
+        });
+
+        // Login button click (if not using form submission)
+        const loginBtn = document.querySelector('#login .login-btn');
+        if (loginBtn) {
+            loginBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                handleLogin();
+            });
+        }
+
+        // Login function
+        function handleLogin() {
+            const username = loginUsername.value.trim();
+            const password = loginPassword.value.trim();
+
+            // Validate inputs
+            if (!username || !password) {
+                showAlert('Please enter both username and password', 'danger');
+                return;
+            }
+
+            // Find user in array
+            const user = users.find(u => u.username === username && u.password === password);
+
+            if (user) {
+                // Successful login
+                currentUser = user;
+                showAlert(`Welcome back, ${user.name}!`, 'success');
+
+                // Redirect based on role (you can customize this)
+                switch(user.role) {
+                    case 'admin':
+                        showSection('customer');
+                        break;
+                    case 'manager':
+                        showSection('orders');
+                        break;
+                    case 'cashier':
+                        showSection('orders');
+                        break;
+                    default:
+                        showSection('customer');
+                }
+
+                // Update UI to show logged in state
+                updateLoginState();
+            } else {
+                // Failed login
+                showAlert('Invalid username or password', 'danger');
+                loginPassword.value = '';
+            }
+        }
+
+        // Show alert message
+        function showAlert(message, type) {
+            // Remove any existing alerts
+            const existingAlert = document.querySelector('#login .alert');
+            if (existingAlert) {
+                existingAlert.remove();
+            }
+
+            // Create alert element
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type} mt-3`;
+            alertDiv.textContent = message;
+
+            // Insert before the form's submit button
+            loginForm.insertBefore(alertDiv, loginForm.lastElementChild);
+
+            // Auto-remove after 3 seconds
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 3000);
+        }
+
+        // Update UI based on login state
+        function updateLoginState() {
+            const loginBtn = document.querySelector('header .btn-warning');
+            const logoutBtn = document.querySelector('header .btn-outline-danger');
+
+            if (currentUser) {
+                // User is logged in
+                if (loginBtn) loginBtn.style.display = 'none';
+                if (logoutBtn) logoutBtn.style.display = 'block';
+
+                // Update header with user info
+                const userInfo = document.createElement('div');
+                userInfo.className = 'd-flex align-items-center ms-3';
+                userInfo.innerHTML = `
+                <span class="me-2">${currentUser.name}</span>
+                <span class="badge bg-secondary">${currentUser.role}</span>
+            `;
+
+                const headerNav = document.querySelector('header nav');
+                if (headerNav) {
+                    headerNav.parentNode.insertBefore(userInfo, headerNav.nextSibling);
+                }
+            } else {
+                // User is logged out
+                if (loginBtn) loginBtn.style.display = 'block';
+                if (logoutBtn) logoutBtn.style.display = 'none';
+            }
+        }
+
+        // Logout functionality
+        const logoutBtn = document.querySelector('header .btn-outline-danger');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', function() {
+                currentUser = null;
+                updateLoginState();
+                showSection('home');
+                showAlert('You have been logged out', 'info');
+            });
+        }
+
+        // Section switching function (should match your existing function)
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Show selected section
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.classList.add('active');
+            }
+
+            // Update nav links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+
+            const navLink = document.querySelector(`.nav-link[onclick="showSection('${sectionId}')"]`);
+            if (navLink) {
+                navLink.classList.add('active');
+            }
+        }
+
+        // Initialize login state
+        updateLoginState();
+    });
+</script>
+
+<script>
     function showSection(sectionId) {
         // Hide all sections
         document.querySelectorAll('.section').forEach(section => {
@@ -737,6 +770,7 @@
         showSection('home');
     });
 </script>
+
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -1884,7 +1918,7 @@
                                     window.close();
                                 }, 200);
                             };
-                       
+
 </body>
 </html>
 `);
