@@ -1884,7 +1884,7 @@
                                     window.close();
                                 }, 200);
                             };
-
+                       
 </body>
 </html>
 `);
