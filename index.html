@@ -573,41 +573,26 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // User data array (in a real app, this would be from a database)
+
         const users = [
-            { id: 1, username: 'admin', password: '123', name: 'System Admin', role: 'admin' },
-            { id: 2, username: 'cashier', password: '123', name: 'Cashier User', role: 'cashier' },
-            { id: 3, username: 'manager', password: '123', name: 'Restaurant Manager', role: 'manager' }
+            { username: 'admin', password: '123', name: 'Admin User' },
+            { username: 'cashier', password: '123', name: 'Cashier User' },
+            { username: 'manager', password: '123', name: 'Manager User' }
         ];
 
-        // DOM Elements
-        const loginForm = document.querySelector('#login form');
-        const loginUsername = document.getElementById('loginUsername');
-        const loginPassword = document.getElementById('loginPassword');
-        const signupLink = document.querySelector('#login a[onclick="showSection(\'signup\')"]');
 
-        // Current user (will be set after successful login)
         let currentUser = null;
 
-        // Login form submission
-        loginForm.addEventListener('submit', function(e) {
+
+        document.querySelector('#login form').addEventListener('submit', function(e) {
             e.preventDefault();
             handleLogin();
         });
 
-        // Login button click (if not using form submission)
-        const loginBtn = document.querySelector('#login .login-btn');
-        if (loginBtn) {
-            loginBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                handleLogin();
-            });
-        }
 
-        // Login function
         function handleLogin() {
-            const username = loginUsername.value.trim();
-            const password = loginPassword.value.trim();
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value.trim();
 
             // Validate inputs
             if (!username || !password) {
@@ -615,76 +600,93 @@
                 return;
             }
 
-            // Find user in array
+
             const user = users.find(u => u.username === username && u.password === password);
 
             if (user) {
-                // Successful login
+
                 currentUser = user;
                 showAlert(`Welcome back, ${user.name}!`, 'success');
 
-                // Redirect based on role (you can customize this)
-                switch(user.role) {
-                    case 'admin':
-                        showSection('customer');
-                        break;
-                    case 'manager':
-                        showSection('orders');
-                        break;
-                    case 'cashier':
-                        showSection('orders');
-                        break;
-                    default:
-                        showSection('customer');
-                }
 
-                // Update UI to show logged in state
+                sessionStorage.setItem('loggedIn', 'true');
+                sessionStorage.setItem('username', user.username);
+
+
+                showSection('customer');
+
+
                 updateLoginState();
             } else {
-                // Failed login
+
                 showAlert('Invalid username or password', 'danger');
-                loginPassword.value = '';
+                document.getElementById('loginPassword').value = '';
             }
         }
 
-        // Show alert message
+
+        function checkLogin() {
+            const currentSection = document.querySelector('.section.active').id;
+
+
+            const protectedSections = ['customer', 'item', 'orders'];
+
+            if (protectedSections.includes(currentSection)) {
+                const isLoggedIn = sessionStorage.getItem('loggedIn') === 'true';
+                if (!isLoggedIn) {
+                    showAlert('Please login to access this section', 'danger');
+                    showSection('login');
+                    return false;
+                }
+            }
+            return true;
+        }
+
+
         function showAlert(message, type) {
-            // Remove any existing alerts
-            const existingAlert = document.querySelector('#login .alert');
+
+            const existingAlert = document.querySelector('.alert');
             if (existingAlert) {
                 existingAlert.remove();
             }
 
-            // Create alert element
+
             const alertDiv = document.createElement('div');
             alertDiv.className = `alert alert-${type} mt-3`;
             alertDiv.textContent = message;
 
-            // Insert before the form's submit button
-            loginForm.insertBefore(alertDiv, loginForm.lastElementChild);
 
-            // Auto-remove after 3 seconds
+            const loginForm = document.querySelector('#login form');
+            if (loginForm) {
+                loginForm.insertBefore(alertDiv, loginForm.lastElementChild);
+            }
+
+
             setTimeout(() => {
                 alertDiv.remove();
             }, 3000);
         }
 
-        // Update UI based on login state
+
         function updateLoginState() {
             const loginBtn = document.querySelector('header .btn-warning');
             const logoutBtn = document.querySelector('header .btn-outline-danger');
+            const username = sessionStorage.getItem('username');
+            const user = users.find(u => u.username === username);
 
-            if (currentUser) {
-                // User is logged in
+            if (user) {
+
                 if (loginBtn) loginBtn.style.display = 'none';
                 if (logoutBtn) logoutBtn.style.display = 'block';
 
-                // Update header with user info
+
+                const existingUserInfo = document.querySelector('.user-info');
+                if (existingUserInfo) existingUserInfo.remove();
+
                 const userInfo = document.createElement('div');
-                userInfo.className = 'd-flex align-items-center ms-3';
+                userInfo.className = 'user-info d-flex align-items-center ms-3';
                 userInfo.innerHTML = `
-                <span class="me-2">${currentUser.name}</span>
-                <span class="badge bg-secondary">${currentUser.role}</span>
+                <span class="me-2">${user.name}</span>
             `;
 
                 const headerNav = document.querySelector('header nav');
@@ -692,16 +694,20 @@
                     headerNav.parentNode.insertBefore(userInfo, headerNav.nextSibling);
                 }
             } else {
-                // User is logged out
                 if (loginBtn) loginBtn.style.display = 'block';
                 if (logoutBtn) logoutBtn.style.display = 'none';
+
+
+                const userInfo = document.querySelector('.user-info');
+                if (userInfo) userInfo.remove();
             }
         }
 
-        // Logout functionality
         const logoutBtn = document.querySelector('header .btn-outline-danger');
         if (logoutBtn) {
             logoutBtn.addEventListener('click', function() {
+                sessionStorage.removeItem('loggedIn');
+                sessionStorage.removeItem('username');
                 currentUser = null;
                 updateLoginState();
                 showSection('home');
@@ -709,32 +715,38 @@
             });
         }
 
-        // Section switching function (should match your existing function)
         function showSection(sectionId) {
-            // Hide all sections
+
             document.querySelectorAll('.section').forEach(section => {
                 section.classList.remove('active');
             });
 
-            // Show selected section
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('onclick') && link.getAttribute('onclick').includes(sectionId)) {
+                    link.classList.add('active');
+                }
+            });
+
             const section = document.getElementById(sectionId);
             if (section) {
                 section.classList.add('active');
+
+
+                if (!checkLogin()) {
+                    return;
+                }
             }
 
-            // Update nav links
-            document.querySelectorAll('.nav-link').forEach(link => {
-                link.classList.remove('active');
-            });
-
-            const navLink = document.querySelector(`.nav-link[onclick="showSection('${sectionId}')"]`);
-            if (navLink) {
-                navLink.classList.add('active');
+            if (sectionId === 'login' || sectionId === 'signup') {
+                document.querySelector('.nav-link[onclick*="home"]').classList.add('active');
             }
         }
+        if (sessionStorage.getItem('loggedIn') ){
+            updateLoginState();
+        }
 
-        // Initialize login state
-        updateLoginState();
+        showSection('home');
     });
 </script>
 
